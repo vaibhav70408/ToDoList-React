@@ -2,24 +2,27 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './index.css';
-import ToDoList from './ToDoList';
+import ToDoList from './ToDolist';
+import { useDispatch, useSelector} from 'react-redux';
+import { addItem,removeItem } from './store/userSlices';
 
 
 const App = () => {   
     const[todo,setTodo]=useState("");
-    const[list,setList]=useState([]);
+    const dispatch=useDispatch();
+    const users = useSelector(state => state.users);
     const handleChange=(event)=>{
         setTodo(event.target.value);
     }
     const handleClick = () => {
-        // Add the new item to the list
-        setList([...list, todo]);
-        // Clear the input field
-        setTodo("");
+      // Dispatch the addItem action with the new item
+      dispatch(addItem(todo));
+      // Clear the input field
+      setTodo("");
     }
-    const handleDelete=(itemToDelete)=>{
-        const updatedList = list.filter(item => item !== itemToDelete);
-        setList(updatedList);
+    const handleDelete = (itemToDelete) => {
+      // Dispatch the removeItem action with the item to delete
+      dispatch(removeItem(itemToDelete));
     }
     return(
   <>
@@ -30,7 +33,7 @@ const App = () => {
             <button onClick={handleClick} className="rounded-button"><span style={{color:'white'}}>+</span></button>
             <div className='list'>
             <ol>
-                            {list.map((item,index) => (
+                            {users.map((item,index) => (
                                 <ToDoList text={item} key={index} onDelete={()=>
                                 handleDelete(item)}/>
                             ))}
